@@ -5,12 +5,10 @@ This code is the companion for the book [Getting Stuff Done with Larvel](https:/
 
 Each branch in this repository contains source code as it is at the end of each chapter named in the branch.
 
-This is from Chapter 27 - Starting the TodoManager class
+This is from Chapter 28 - Finishing the TodoManager class
 
 Changes in this chapter:
 
-* Added TodoManager::makeList()
-* Added exists() to TodoRepositoryInterface
-* Refactored TodoTaskInterface to TaskInterface
-* Added Mockery to dependencies
-* Added unit testing for TodoManager::makeList()
+* Implemented/tested TodoManager::allLists() method
+* Updated TodoRepositoryInterface to take $archived options
+* Implemented/tested TodoManager::get() method
