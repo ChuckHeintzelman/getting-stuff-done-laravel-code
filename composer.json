@@ -1,0 +1,33 @@
+{
+	"name": "gsd",
+	"description": "Getting STuff Done with laravel.",
+	"require": {
+		"laravel/framework": "4.0.*"
+	},
+	"autoload": {
+		"psr-0": {
+			"GSD": "app/src"
+		},
+		"classmap": [
+			"app/tests/TestCase.php"
+		]
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"php artisan optimize"
+		],
+		"pre-update-cmd": [
+			"php artisan clear-compiled"
+		],
+		"post-update-cmd": [
+			"php artisan optimize"
+		],
+		"post-create-project-cmd": [
+			"php artisan key:generate"
+		]
+	},
+	"config": {
+		"preferred-install": "dist"
+	},
+	"minimum-stability": "dev"
+}
