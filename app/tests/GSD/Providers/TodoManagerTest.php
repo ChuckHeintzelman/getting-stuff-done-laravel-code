@@ -60,4 +60,71 @@ class TodoManagerTest extends TestCase {
         $this->assertInstanceOf('GSD\Entities\ListInterface', $list);
     }
 
+    public function testAllListsReturnsArray()
+    {
+        // Mock the repository
+        App::bind('TodoRepositoryInterface', function()
+        {
+            $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');
+            $mock->shouldReceive('getAll')
+                 ->once()
+                 ->andReturn(array());
+            return $mock;
+        });
+
+        $result = Todo::allLists();
+        $this->assertInternalType('array', $result);
+    }
+
+    public function testAllArchivedListsReturnsArray()
+    {
+        // Mock the repository
+        App::bind('TodoRepositoryInterface', function()
+        {
+            $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');
+            $mock->shouldReceive('getAll')
+                 ->once()
+                 ->andReturn(array());
+            return $mock;
+        });
+
+        $result = Todo::allLists(true);
+        $this->assertInternalType('array', $result);
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testGetListThrowsExceptionWhenMissing()
+    {
+        // Mock the repository
+        App::bind('TodoRepositoryInterface', function()
+        {
+            $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');
+            $mock->shouldReceive('exists')
+                 ->once()
+                 ->andReturn(false);
+            return $mock;
+        });
+
+        // Should throw an error
+        $list = Todo::get('abc');
+    }
+
+    public function testGetListReturnsCorrectType()
+    {
+        // Mock the repository
+        App::bind('TodoRepositoryInterface', function()
+        {
+            $list = Mockery::mock('GSD\Entities\ListInterface');
+            $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');
+            $mock->shouldReceive('exists')->once()->andReturn(true);
+            $mock->shouldReceive('load')->once()->andReturn($list);
+            return $mock;
+        });
+
+        // Should throw an error
+        $list = Todo::get('abc');
+        $this->assertInstanceOf('GSD\Entities\ListInterface', $list);
+    }
 }
