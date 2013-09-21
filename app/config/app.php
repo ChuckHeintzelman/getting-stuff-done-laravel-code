@@ -5,6 +5,10 @@ return array(
     'gsd' => array(
         'folder' => '/home/chuck/Documents/gsd/',
         'extension' => '.txt',
+        'listOrder' => array(
+            'inbox', 'actions', 'waiting', 'someday', 'calendar',
+        ),
+        'defaultList' => 'actions',
     ),
 
     /*
