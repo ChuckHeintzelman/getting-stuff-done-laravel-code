@@ -1,15 +1,22 @@
-<?php namespace GSD\Respositories;
+<?php namespace GSD\Repositories;
 
 // File: app/src/GSD/Repositories/TodoRepositoryInterface.php
 
-use GSD\Entities\TodoListInterface;
+use GSD\Entities\ListInterface;
 
 interface TodoRepositoryInterface {
 
     /**
+     * Does the todo list exist?
+     * @param string $id ID of the list
+     * @return boolean
+     */
+    public function exists($id);
+
+    /**
      * Load a TodoList form it's id
      * @param  string $id ID of the list
-     * @return TodoListInterface The List
+     * @return ListInterface The List
      * @throws  InvalidArgumentException If $id not found
      */
     public function load($id);
@@ -17,7 +24,7 @@ interface TodoRepositoryInterface {
     /**
      * Save a TodoList
      * @param string $id ID of the list
-     * @param TodoListInterface $list The TODO List
+     * @param ListInterface $list The TODO List
      */
-    public function save($id, TodoListInterface $list);
+    public function save($id, ListInterface $list);
 }
