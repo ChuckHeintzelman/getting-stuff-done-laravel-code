@@ -1,8 +1,9 @@
 {
 	"name": "gsd",
-	"description": "Getting STuff Done with laravel.",
+	"description": "Getting Stuff Done with laravel.",
 	"require": {
-		"laravel/framework": "4.0.*"
+		"laravel/framework": "4.0.*",
+		"mockery/mockery": "dev-master"
 	},
 	"autoload": {
 		"psr-0": {
