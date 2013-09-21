@@ -123,6 +123,8 @@ return array(
         'Illuminate\View\ViewServiceProvider',
         'Illuminate\Workbench\WorkbenchServiceProvider',
 
+        'GSD\Providers\TodoServiceProvider',
+
     ),
 
     /*
@@ -188,6 +190,7 @@ return array(
         'Validator'       => 'Illuminate\Support\Facades\Validator',
         'View'            => 'Illuminate\Support\Facades\View',
 
+        'Todo' => 'GSD\Providers\TodoFacade',
     ),
 
 );
