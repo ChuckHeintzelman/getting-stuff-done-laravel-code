@@ -1,9 +1,13 @@
 getting-stuff-done-laravel-code
 ===============================
 
-Code from each chapter in my Getting Stuff Done With Laravel book. Each branch of this repository contains the source code as of the end of the chapter named in the branch.
+This code is the companion for the book [Getting Stuff Done with Larvel](https://leanpub.com/gettingstuffdonelaravel).
 
-Chapter 19 - Installing Laravel
+Each branch in this repository contains source code as it is at the end of each chapter named in the branch.
+
+This is Chapter 19 - Installing Laravel
+
+Changes in this chapter:
 
 * Creation of the project structure
 * Deleting unneeded directories
