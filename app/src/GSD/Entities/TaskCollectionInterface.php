@@ -8,12 +8,12 @@ interface TaskCollectionInterface {
      * Add a new task to the collection
      * @param TodoTaskInterface $task
      */
-    public function add(TodoTaskInterface $task);
+    public function add(TaskInterface $task);
 
     /**
      * Return task based on index
      * @param integer $index 0 is first item in collection
-     * @return TodoTaskInterface The Todo Task
+     * @return TaskInterface The Todo Task
      * @throws OutOfBoundsException If $index outside range
      */
     public function get($index);
