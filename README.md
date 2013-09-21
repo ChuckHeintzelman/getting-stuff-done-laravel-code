@@ -9,3 +9,5 @@ This is from Chapter 21 - Thinking about Tasks
 
 Changes in this chapter:
 
+* Created TodoTaskInterface
+* Created TaskCollectionInterface
