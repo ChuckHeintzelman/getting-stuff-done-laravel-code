@@ -54,13 +54,6 @@ interface ListInterface {
     public function archive();
 
     /**
-     * Loads the task list by id
-     * @return ListInterface for method chaining
-     * @throws InvalidArgumentException If $name not found
-     */
-    public function load($id);
-
-    /**
      * Save the task list
      * @return ListInterface for method chaining
      */
