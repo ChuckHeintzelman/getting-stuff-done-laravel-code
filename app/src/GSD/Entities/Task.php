@@ -191,7 +191,7 @@ class Task implements TaskInterface {
         // Remove dup spaces and split into words
         $info = preg_replace('/\s\s+/', ' ', $info);
         $words = explode(' ', trim($info));
-        if (count($words) == 0)
+        if (count($words) == 1 && $words[0] == '')
         {
             return false;
         }
