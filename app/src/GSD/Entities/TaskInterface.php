@@ -74,4 +74,16 @@ interface TaskInterface {
      * @throws InvalidArgumentException If $name is invalid
      */
     public function get($name);
+
+    /**
+     * Set all the tasks attributes from a string.
+     * @param string $info The task info
+     * @return bool True on success, false otherwise
+     */
+    public function setFromString($info);
+
+    /**
+     * Return the task as a string
+     */
+    public function __toString();
 }
