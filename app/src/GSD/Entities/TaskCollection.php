@@ -27,7 +27,7 @@ class TaskCollection implements TaskCollectionInterface {
             {
                 throw new \InvalidArgumentException('$task must be string or TaskInterface');
             }
-            $newTask = App::make('GSD/Entities/TaskInterface');
+            $newTask = \App::make('GSD\Entities\TaskInterface');
             if ( ! $newTask->setFromString($task))
             {
                 throw new \InvalidArgumentException('Cannot parse task string');
@@ -103,9 +103,9 @@ class TaskCollection implements TaskCollectionInterface {
                 $normal[] = $task;
             }
         }
-        usort($next, 'TaskCollection::cmpDescription');
-        usort($normal, 'TaskCollection::cmpDescription');
-        usort($completed, 'TaskCollection::cmpCompleted');
+        usort($next, 'static::cmpDescription');
+        usort($normal, 'static::cmpDescription');
+        usort($completed, 'static::cmpCompleted');
         $this->tasks = array_merge($next, $normal, $completed);
     }
 
