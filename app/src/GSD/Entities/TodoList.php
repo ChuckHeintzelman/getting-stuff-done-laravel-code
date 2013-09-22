@@ -112,13 +112,11 @@ class TodoList implements ListInterface {
     {
         if ($this->isDirty)
         {
-            $archived = !empty($this->attributes['archived']);
             if ( ! array_key_exists('id', $this->attributes))
             {
                 throw new \RuntimeException("Cannot save if id not set");
             }
-            $id = $this->attributes['id'];
-            if ( ! $this->repository->save($id, $this, $archived))
+            if ( ! $this->repository->save($this))
             {
                 throw new \RuntimeException("Repository could not save");
             }
