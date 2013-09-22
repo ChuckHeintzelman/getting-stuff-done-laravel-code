@@ -11,5 +11,5 @@ Changes in this chapter:
 
 * Implemented TaskCollectionInterface with the TaskCollection class
 * Added methods to TaskInterface
-* Implement ListInterface with the Task class
+* Implement TaskInterface with the Task class
 * Bound the two interfaces implemented here with the concrete classes
