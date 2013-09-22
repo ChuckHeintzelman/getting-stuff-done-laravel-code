@@ -15,5 +15,7 @@ class TodoServiceProvider extends ServiceProvider {
         {
             return new TodoManager;
         });
+
+        $this->app->bind('GSD\Entities\ListInterface', 'GSD\Entities\TodoList');
     }
 }
