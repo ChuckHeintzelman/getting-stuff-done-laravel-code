@@ -20,5 +20,7 @@ class TodoServiceProvider extends ServiceProvider {
         $this->app->bind('GSD\Entities\TaskInterface', 'GSD\Entities\Task');
         $this->app->bind('GSD\Entities\TaskCollectionInterface',
             'GSD\Entities\TaskCollection');
+        $this->app->bind('GSD\Repositories\TodoRepositoryInterface',
+            'GSD\Repositories\TodoRepository');
     }
 }
