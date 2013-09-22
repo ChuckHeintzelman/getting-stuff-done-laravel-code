@@ -35,4 +35,11 @@ interface TodoRepositoryInterface {
      * @param ListInterface $list The TODO List
      */
     public function save($id, ListInterface $list, $archived = false);
+
+    /**
+     * Delete the todo list
+     * @param string $id ID of the list
+     * @return boolean True if successful
+     */
+    public function delete($id, $archived = false);
 }

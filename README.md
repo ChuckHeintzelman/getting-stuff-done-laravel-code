@@ -5,12 +5,13 @@ This code is the companion for the book [Getting Stuff Done with Larvel](https:/
 
 Each branch in this repository contains source code as it is at the end of each chapter named in the branch.
 
-This is from Chapter 29 - Implementing ListInterface
+This is from Chapter 30 - Finishing the TodoList class
 
 Changes in this chapter:
 
-* Created the TodoList class
-* Bound the ListInterface to the TodoList
-* Implemented TodoList::get() and set()
-* Implemented TodoList::save()
-* Created unit tests for TodoList class
+* Finished Todo List attribute methods
+* Removed TodoList::load()
+* Implement TodoList::archive()
+* Added delete() to the TodoRepositoryInterface
+* Implemented TodoList task...() methods
+* Added TodoList unit tests
