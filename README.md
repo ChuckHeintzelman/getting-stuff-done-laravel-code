@@ -5,15 +5,11 @@ This code is the companion for the book [Getting Stuff Done with Larvel](https:/
 
 Each branch in this repository contains source code as it is at the end of each chapter named in the branch.
 
-This is from Chapter 33 - Implementing the TodoRepository
+This is from Chapter 34 - Artisan Tightening
 
 Changes in this chapter:
 
-* Changed TodoListRepository save() args
-* Changed TodoList class save()
-* Created TodoRepository class
-* Bound TodoRepositoryInterface to concret class
-* Added test config file
-* Created test data
-* Created unit tests for TodoRepository
-
+* Removed Session Command service provider
+* Removed Migration and Queue service providers
+* Removed Key, Database, and Package service providers
+* Removed Maintenance, Server, Tinker and Workbench service providers
