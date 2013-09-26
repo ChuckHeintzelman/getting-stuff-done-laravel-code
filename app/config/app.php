@@ -9,6 +9,7 @@ return array(
             'inbox', 'actions', 'waiting', 'someday', 'calendar',
         ),
         'defaultList' => 'actions',
+        'noListPrompt' => true,     // true=prompt for list, false=use default
     ),
 
     /*
