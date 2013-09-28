@@ -5,11 +5,13 @@ This code is the companion for the book [Getting Stuff Done with Larvel](https:/
 
 Each branch in this repository contains source code as it is at the end of each chapter named in the branch.
 
-This is from Chapter 37 - Using Helper Functions
+This is from Chapter 38 - The ListAllCommand
 
 Changes in this chapter:
 
-* Created helpers.php
-* Added helpers.php to composer.json
-* Added between() and pick_from_list() helpers
-* Unit tested pick_from_list()
+* Created ListAllCommand
+* Told artisan about the new command
+* Fixed namespacing bug in TodoManager.php
+* Fixed namespacing bug in TodoManagerTest.php
+* Added tearDown() to TodoManagerTest and TodoListTest
+* Refactored ListInterface::taskCount()

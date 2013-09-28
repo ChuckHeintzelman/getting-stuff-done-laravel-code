@@ -5,6 +5,11 @@ use GSD\Providers\TodoManager;
 
 class TodoManagerTest extends TestCase {
 
+    public function tearDown()
+    {
+        $this->refreshApplication();
+    }
+
     public function testImATeapot()
     {
         $obj = new TodoManager;
@@ -22,7 +27,7 @@ class TodoManagerTest extends TestCase {
     public function testMakeListThrowsExceptionWhenExists()
     {
         // Mock the repository
-        App::bind('TodoRepositoryInterface', function()
+        App::bind('GSD\Repositories\TodoRepositoryInterface', function()
         {
             $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');
             $mock->shouldReceive('exists')
@@ -38,7 +43,7 @@ class TodoManagerTest extends TestCase {
     public function testMakeList()
     {
         // Mock the repository
-        App::bind('TodoRepositoryInterface', function()
+        App::bind('GSD\Repositories\TodoRepositoryInterface', function()
         {
             $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');
             $mock->shouldReceive('exists')
@@ -48,7 +53,7 @@ class TodoManagerTest extends TestCase {
         });
 
         // Mock the list object
-        App::bind('ListInterface', function()
+        App::bind('GSD\Entities\ListInterface', function()
         {
             $mock = Mockery::mock('GSD\Entities\ListInterface');
             $mock->shouldReceive('set')->twice()->andReturn($mock, $mock);
@@ -63,7 +68,7 @@ class TodoManagerTest extends TestCase {
     public function testAllListsReturnsArray()
     {
         // Mock the repository
-        App::bind('TodoRepositoryInterface', function()
+        App::bind('GSD\Repositories\TodoRepositoryInterface', function()
         {
             $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');
             $mock->shouldReceive('getAll')
@@ -79,7 +84,7 @@ class TodoManagerTest extends TestCase {
     public function testAllArchivedListsReturnsArray()
     {
         // Mock the repository
-        App::bind('TodoRepositoryInterface', function()
+        App::bind('GSD\Repositories\TodoRepositoryInterface', function()
         {
             $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');
             $mock->shouldReceive('getAll')
@@ -98,7 +103,7 @@ class TodoManagerTest extends TestCase {
     public function testGetListThrowsExceptionWhenMissing()
     {
         // Mock the repository
-        App::bind('TodoRepositoryInterface', function()
+        App::bind('GSD\Repositories\TodoRepositoryInterface', function()
         {
             $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');
             $mock->shouldReceive('exists')
@@ -114,7 +119,7 @@ class TodoManagerTest extends TestCase {
     public function testGetListReturnsCorrectType()
     {
         // Mock the repository
-        App::bind('TodoRepositoryInterface', function()
+        App::bind('GSD\Repositories\TodoRepositoryInterface', function()
         {
             $list = Mockery::mock('GSD\Entities\ListInterface');
             $mock = Mockery::mock('GSD\Repositories\TodoRepositoryInterface');

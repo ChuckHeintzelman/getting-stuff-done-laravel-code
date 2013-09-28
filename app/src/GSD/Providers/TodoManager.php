@@ -21,12 +21,12 @@ class TodoManager {
      */
     public function makeList($id, $title)
     {
-        $repository = App::make('TodoRepositoryInterface');
+        $repository = App::make('GSD\Repositories\TodoRepositoryInterface');
         if ($repository->exists($id))
         {
             throw new \InvalidArgumentException("A list with id=$id already exists");
         }
-        $list = App::make('ListInterface');
+        $list = App::make('GSD\Entities\ListInterface');
         $list->set('id', $id)
              ->set('title', $title)
              ->save();
@@ -40,7 +40,7 @@ class TodoManager {
      */
     public function allLists($archived = false)
     {
-        $repository = App::make('TodoRepositoryInterface');
+        $repository = App::make('GSD\Repositories\TodoRepositoryInterface');
         return $repository->getAll($archived);
     }
 
@@ -53,7 +53,7 @@ class TodoManager {
      */
     public function get($id, $archived = false)
     {
-        $repository = App::make('TodoRepositoryInterface');
+        $repository = App::make('GSD\Repositories\TodoRepositoryInterface');
         if ( ! $repository->exists($id, $archived))
         {
             throw new \RuntimeException("List id=$id not found");

@@ -173,11 +173,39 @@ class TodoList implements ListInterface {
 
     /**
      * Return number of tasks
+     * @param string $type Either 'all', 'done', 'todo', or 'next'
      * @return integer
      */
-    public function taskCount()
+    public function taskCount($type = 'all')
     {
-        return count($this->tasks->getAll());
+        $count = 0;
+        foreach ($this->tasks->getAll() as $task)
+        {
+            switch($type)
+            {
+                case 'done':
+                    if ($task->isComplete())
+                    {
+                        $count++;
+                    }
+                    break;
+                case 'todo':
+                    if ( ! $task->isComplete() and ! $task->isNextAction())
+                    {
+                        $count++;
+                    }
+                    break;
+                case 'next':
+                    if ( ! $task->isComplete() and $task->isNextAction())
+                    {
+                        $count++;
+                    }
+                    break;
+                default:
+                    $count++;
+            }
+        }
+        return $count;
     }
 
     /**
