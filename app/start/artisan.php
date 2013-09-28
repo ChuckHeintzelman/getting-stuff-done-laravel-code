@@ -12,3 +12,4 @@
 */
 
 Artisan::add(new GSD\Commands\ListAllCommand);
+Artisan::add(new GSD\Commands\CreateCommand);
