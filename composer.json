@@ -11,6 +11,9 @@
 		},
 		"classmap": [
 			"app/tests/TestCase.php"
+		],
+		"files": [
+			"app/src/GSD/helpers.php"
 		]
 	},
 	"scripts": {
