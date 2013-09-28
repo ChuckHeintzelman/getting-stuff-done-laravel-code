@@ -78,4 +78,14 @@ class HelpersTest extends TestCase {
         $choice = pick_from_list($command, 'title', array('option'), 0, "Abort");
         $this->assertEquals(-1, $choice);
     }
+
+    public function testAllNull()
+    {
+        $this->assertTrue(all_null());
+        $this->assertTrue(all_null(null));
+        $this->assertTrue(all_null(null, null, null, null));
+        $this->assertFalse(all_null(0));
+        $this->assertFalse(all_null(null, null, '', null));
+        $this->assertFalse(all_null(null, null, null, 33));
+    }
 }
