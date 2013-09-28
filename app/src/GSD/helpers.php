@@ -2,6 +2,23 @@
 use Illuminate\Console\Command;
 
 /**
+ * Return TRUE if every arg is null
+ * @memory_get_usage() all_null(arg1, arg2, ...)
+ * @return bool
+ */
+function all_null()
+{
+    foreach (func_get_args() as $arg)
+    {
+        if (!is_null($arg))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
  * Return TRUE if a value is between two other values
  */
 function between($value, $min, $max, $inclusive = true)
