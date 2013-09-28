@@ -3,6 +3,10 @@
 
 class TodoListTest extends TestCase {
 
+    public function tearDown()
+    {
+        $this->refreshApplication();
+    }
     public function setup()
     {
         App::bind('GSD\Repositories\TodoRepositoryInterface', function()

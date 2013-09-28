@@ -70,9 +70,10 @@ interface ListInterface {
 
     /**
      * Return number of tasks
+     * @param string $type Either 'all', 'done', 'todo', or 'next'
      * @return integer
      */
-    public function taskCount();
+    public function taskCount($type = 'all');
 
     /**
      * Return a task
