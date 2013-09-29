@@ -22,16 +22,6 @@ class CreateCommand extends CommandBase {
     protected $description = 'Create new list.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return void
