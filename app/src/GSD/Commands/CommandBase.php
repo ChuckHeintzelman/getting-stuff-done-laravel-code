@@ -1,12 +1,16 @@
 <?php namespace GSD\Commands;
 
 use App;
+use Config;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use Todo;
 
 class CommandBase extends Command {
 
     protected $repository;
+    protected $nameArgumentDescription = 'List name.';
 
     /**
      * Constructor
@@ -79,6 +83,91 @@ class CommandBase extends Command {
         $this->line('');
         $this->line($block);
         $this->line('');
+    }
+
+    /**
+     * The console command arguments. Derived classes could replace this
+     * method entirely, or merge its own arguments with these.
+     *
+     * @return array
+     */
+    protected function getArguments()
+    {
+        return array(
+            array('+name', InputArgument::OPTIONAL,
+                $this->nameArgumentDescription),
+        );
+    }
+
+    /**
+     * The console command options. Derived classes could replace this
+     * method entirely, or merge its own options with these
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return array(
+            array('listname', 'l', InputOption::VALUE_REQUIRED,
+                "Source of list name, 'prompt' or 'default'"),
+        );
+    }
+
+    /**
+     * Get the list id (of existing lists)
+     *
+     * This can happen in a variety of ways. If specified as an argument, then
+     * it's returned (without the + of course). Otherwise, look to see if the
+     * `--listname` argument is used and determine the list accordingly.
+     * Finally, we fallback to the method specified by Config's
+     * 'app.gsd.noListPrompt' setting
+     *
+     * @return string Existing list id (or null if user aborts)
+     * @throws InvalidArgumentException If something's not right
+     */
+    protected function getListId()
+    {
+        $archived = $this->input->hasOption('archived') and
+                    $this->option('archived');
+        $name = $this->argument('+name');
+        $listnameOption = $this->option('listname');
+        if ($name)
+        {
+            $name = substr($name, 1);
+            if ( ! is_null($listnameOption))
+            {
+                throw new \InvalidArgumentException(
+                    'Cannot specify +name and --listname together');
+            }
+        }
+        else
+        {
+            if (is_null($listnameOption))
+            {
+                $listnameOption = Config::get('app.gsd.noListPrompt') ? 'prompt' : 'config';
+            }
+            if ($listnameOption == 'prompt')
+            {
+                $name = $this->askForListId(true, true, $archived);
+                if (is_null($name))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                $name = Config::get('app.gsd.defaultList');
+            }
+        }
+
+        // Throw error if list doesn't exist
+        if ( ! $this->repository->exists($name, $archived))
+        {
+            $archived = ($archived) ? '(archived) ' : '';
+            throw new \InvalidArgumentException(
+                "List $archived'$name' not found");
+        }
+        return $name;
     }
 
 }
