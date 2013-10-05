@@ -9,7 +9,7 @@ class TodoRepositoryTest extends TestCase {
     public function setup()
     {
         $path = __DIR__.'/data/';
-        $ext = Config::get('app.gsd.extension');
+        $ext = Config::get('todo.extension');
         $files = array_merge(
             glob($path.'*'.$ext),
             glob($path.'archived/*'.$ext)
