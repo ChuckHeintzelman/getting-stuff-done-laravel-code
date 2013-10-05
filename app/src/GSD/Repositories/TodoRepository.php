@@ -3,6 +3,7 @@
 // File: app/src/GSD/Repositories/TodoRespository.php
 
 use Config;
+use File;
 use GSD\Entities\ListInterface;
 
 class TodoRepository implements TodoRepositoryInterface {
@@ -15,17 +16,17 @@ class TodoRepository implements TodoRepositoryInterface {
      */
     public function __construct()
     {
-        $this->path = str_finish(Config::get('app.gsd.folder'), '/');
-        if ( ! is_dir($this->path))
+        $this->path = str_finish(Config::get('todo.folder'), '/');
+        if ( ! File::isDirectory($this->path))
         {
             throw new \RuntimeException("Directory doesn't exist: $this->path");
         }
-        if ( ! is_dir($this->path.'archived'))
+        if ( ! File::isDirectory($this->path.'archived'))
         {
             throw new \RuntimeException("Directory doesn't exist: $this->path".
                 'archived');
         }
-        $this->extension = Config::get('app.gsd.extension');
+        $this->extension = Config::get('todo.extension');
         if ( ! starts_with($this->extension, '.'))
         {
             $this->extension = '.' . $this->extension;
@@ -39,12 +40,7 @@ class TodoRepository implements TodoRepositoryInterface {
      */
     public function delete($id, $archived = false)
     {
-        $file = $this->fullpath($id, $archived);
-        if (file_exists($file))
-        {
-            return unlink($file);
-        }
-        return false;
+        return File::delete($this->fullpath($id, $archived));
     }
 
     /**
@@ -56,7 +52,7 @@ class TodoRepository implements TodoRepositoryInterface {
     public function exists($id, $archived = false)
     {
         $file = $this->fullpath($id, $archived);
-        return file_exists($file);
+        return File::exists($file);
     }
 
     /**
@@ -72,7 +68,7 @@ class TodoRepository implements TodoRepositoryInterface {
             $match .= 'archived/';
         }
         $match .= '*' . $this->extension;
-        $files = glob($match);
+        $files = File::glob($match);
         $ids = array();
         foreach ($files as $file)
         {
@@ -95,14 +91,14 @@ class TodoRepository implements TodoRepositoryInterface {
             throw new \InvalidArgumentException(
                 "List with id=$id, archived=$archived not found");
         }
-        $lines = file($this->fullpath($id, $archived));
+        $lines = explode("\n", File::get($this->fullpath($id, $archived)));
 
         // Pull title
         $title = array_shift($lines);
         $title = trim(substr($title, 1));
 
         // Pull subtitle
-        if (count($lines) && $lines[0][0] == '(')
+        if (count($lines) && starts_with($lines[0], '('))
         {
             $subtitle = trim(array_shift($lines));
             $subtitle = ltrim($subtitle, '(');
@@ -148,7 +144,7 @@ class TodoRepository implements TodoRepositoryInterface {
         {
             $build[] = "($subtitle)";
         }
-        $lastType = '';
+        $lastType = 'z';
         $tasks = $list->tasks();
         foreach ($tasks as $task)
         {
@@ -163,7 +159,7 @@ class TodoRepository implements TodoRepositoryInterface {
         }
         $content = join("\n", $build);
         $filename = $this->fullpath($id, $archived);
-        $result = file_put_contents($filename, $content);
+        $result = File::put($filename, $content);
 
         return $result !== false;
     }
