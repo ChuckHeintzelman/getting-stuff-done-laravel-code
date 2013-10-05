@@ -64,7 +64,7 @@ class ListAllCommand extends Command {
     {
         // Pull the names
         $special = array();
-        foreach (\Config::get('app.gsd.listOrder') as $name)
+        foreach (\Config::get('todo.listOrder') as $name)
         {
             $special[$name] = false;
         }
