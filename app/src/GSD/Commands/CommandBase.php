@@ -11,6 +11,7 @@ class CommandBase extends Command {
 
     protected $repository;
     protected $nameArgumentDescription = 'List name.';
+    protected $taskNoDescription = null;
 
     /**
      * Constructor
@@ -89,14 +90,25 @@ class CommandBase extends Command {
      * The console command arguments. Derived classes could replace this
      * method entirely, or merge its own arguments with these.
      *
-     * @return array
+     * @return array of argument definitions
      */
     protected function getArguments()
     {
-        return array(
-            array('+name', InputArgument::OPTIONAL,
-                $this->nameArgumentDescription),
+        $args = array();
+        if ( ! is_null($this->taskNoDescription))
+        {
+            $args[] = array(
+                'task-number',
+                InputArgument::OPTIONAL,
+                $this->taskNoDescription
+            );
+        }
+        $args[] = array(
+            '+name',
+            InputArgument::OPTIONAL,
+            $this->nameArgumentDescription
         );
+        return $args;
     }
 
     /**
@@ -168,6 +180,57 @@ class CommandBase extends Command {
                 "List $archived'$name' not found");
         }
         return $name;
+    }
+
+    /**
+     * Get the task # of a list, either from the argument or prompt the user.
+     * Keep in mind the # present to the user always begins with 1, but the
+     * number we return is always one less (starting with 0)
+     *
+     * @param ListInterface $list The Todo List
+     * @param bool $showNext Show next actions in prompt list
+     * @param bool $showNormal Show normal tasks in prompt list
+     * @param bool $showComplete Show completed tasks in prompt list
+     * @return mixed NULL if user aborts, otherwise integer of task number
+     */
+    protected function getTaskNo(\GSD\Entities\ListInterface $list,
+        $showNext, $showNormal, $showComplete)
+    {
+        // Return the # if provided on command line
+        $taskNo = $this->argument('task-number');
+        if ( ! is_null($taskNo))
+        {
+            return (int)$taskNo - 1;
+        }
+
+        // Build list of tasks
+        $tasks = array();
+        foreach ($list->tasks() as $task)
+        {
+            if ($task->isComplete())
+            {
+                if ($showComplete)
+                    $tasks[] = (string)$task;
+            }
+            elseif ($task->isNextAction())
+            {
+                if ($showNext)
+                    $tasks[] = (string)$task;
+            }
+            elseif ($showNormal)
+            {
+                $tasks[] = (string)$task;
+            }
+        }
+
+        // Let user pick from list, return result
+        $result = pick_from_list($this, $this->taskNoDescription,
+            $tasks, 0, 'cancel, do not perform action');
+        if ($result == -1)
+        {
+            return null;
+        }
+        return $result - 1;
     }
 
 }

@@ -46,6 +46,7 @@ class TaskCollection implements TaskCollectionInterface {
      */
     public function get($index)
     {
+        $this->sortTasks();
         if ($index < 0 || $index >= count($this->tasks))
         {
             throw new \OutOfBoundsException('$index is outside range');
@@ -59,6 +60,7 @@ class TaskCollection implements TaskCollectionInterface {
      */
     public function getAll()
     {
+        $this->sortTasks();
         return $this->tasks;
     }
 
