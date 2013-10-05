@@ -144,7 +144,7 @@ class CommandBase extends Command {
         {
             if (is_null($listnameOption))
             {
-                $listnameOption = Config::get('app.gsd.noListPrompt') ? 'prompt' : 'config';
+                $listnameOption = Config::get('todo.noListPrompt') ? 'prompt' : 'config';
             }
             if ($listnameOption == 'prompt')
             {
@@ -156,7 +156,7 @@ class CommandBase extends Command {
             }
             else
             {
-                $name = Config::get('app.gsd.defaultList');
+                $name = Config::get('todo.defaultList');
             }
         }
 
