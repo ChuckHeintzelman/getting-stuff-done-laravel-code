@@ -94,4 +94,18 @@ class HelpersTest extends TestCase {
         $this->assertFalse(all_null(null, null, '', null));
         $this->assertFalse(all_null(null, null, null, 33));
     }
+
+    public function testStr2bool()
+    {
+        $this->assertTrue(str2bool('yes'));
+        $this->assertTrue(str2bool('True'));
+        $this->assertTrue(str2bool('1'));
+        $this->assertTrue(str2bool('oN'));
+        $this->assertFalse(str2bool('x'));
+        $this->assertFalse(str2bool(''));
+        $this->assertFalse(str2bool('0'));
+        $this->assertFalse(str2bool('no'));
+        $this->assertFalse(str2bool('false'));
+        $this->assertFalse(str2bool('off'));
+    }
 }

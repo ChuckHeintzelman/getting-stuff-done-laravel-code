@@ -105,12 +105,13 @@ class TodoList implements ListInterface {
 
     /**
      * Save the list
+     * @param bool $force Force saving, even if list isn't dirty
      * @return $this For method chaining
      * @throws RuntimeException If cannot save.
      */
-    public function save()
+    public function save($force = false)
     {
-        if ($this->isDirty)
+        if ($this->isDirty || $force)
         {
             if ( ! array_key_exists('id', $this->attributes))
             {
