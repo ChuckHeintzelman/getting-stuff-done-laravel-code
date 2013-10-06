@@ -55,9 +55,10 @@ interface ListInterface {
 
     /**
      * Save the task list
+     * @param bool $force Force saving, even if list isn't dirty
      * @return ListInterface for method chaining
      */
-    public function save();
+    public function save($force = false);
 
     // Task operations -------------------------
 
