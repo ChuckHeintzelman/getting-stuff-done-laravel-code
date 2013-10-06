@@ -103,3 +103,11 @@ function pick_from_list(Command $command, $title, array $choices,
         $command->line($block);
     }
 }
+
+/**
+ * Returns TRUE if the string is a true value
+ */
+function str2bool($value)
+{
+    return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+}
