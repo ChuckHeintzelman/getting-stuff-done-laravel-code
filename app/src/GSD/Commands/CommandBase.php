@@ -12,6 +12,7 @@ class CommandBase extends Command {
     protected $repository;
     protected $nameArgumentDescription = 'List name.';
     protected $taskNoDescription = null;
+    protected $askForListAction = 'destroy';
 
     /**
      * Constructor
@@ -34,9 +35,9 @@ class CommandBase extends Command {
     {
         if ($existing)
         {
-            $title = 'Choose which list to destroy:';
-            $abort = 'cancel - do not destroy a list';
-            $choices = Todo::allLists();
+            $title = "Choose which list to $this->askForListAction:";
+            $abort = "cancel - do not $this->askForListAction a list";
+            $choices = Todo::allLists($archived);
             if (count($choices) == 0)
             {
                 throw new \RuntimeException('No lists to choose from');
