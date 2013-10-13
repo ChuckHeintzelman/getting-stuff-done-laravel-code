@@ -8,7 +8,7 @@ class EditListCommand extends CommandBase {
 
     protected $name = 'gsd:editlist';
     protected $description = "Edit a list's title or subtitle.";
-    protected $nameArgumentDescription = 'List name to edit.';
+    protected $nameArgumentDescription = "List name to edit.";
 
     /**
      * Execute the console command.
@@ -17,11 +17,10 @@ class EditListCommand extends CommandBase {
      */
     public function fire()
     {
-        $name = $this->getListId();
+        $name = $this->getListId('Select list to edit:');
         if (is_null($name))
         {
-            $this->outputErrorBox('EditList aborted');
-            return;
+            $this->abort();
         }
         $list = Todo::get($name);
 
@@ -37,7 +36,7 @@ class EditListCommand extends CommandBase {
             $this->line('');
             if (all_null($title, $subtitle))
             {
-                $this->comment('Nothing changed. List not updated.');
+                $this->comment('Nothing changed. List not udpated.');
                 return;
             }
         }
@@ -56,8 +55,6 @@ class EditListCommand extends CommandBase {
 
     /**
      * Get the console command options.
-     *
-     * @return array
      */
     protected function getOptions()
     {
@@ -68,4 +65,5 @@ class EditListCommand extends CommandBase {
                 'Subtitle of list.', null),
         ));
     }
+
 }

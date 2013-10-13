@@ -1,24 +1,12 @@
 <?php namespace GSD\Commands;
 
-use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class ListAllCommand extends Command {
+class ListAllCommand extends CommandBase {
 
-    /**
-     * The console command name.
-     *
-     * @var string
-     */
     protected $name = 'gsd:listall';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'List all todo lists (and possibly tasks).';
+    protected $description = 'Lists all todo lists (and possibly tasks).';
 
     /**
      * Execute the console command.
@@ -52,9 +40,10 @@ class ListAllCommand extends Command {
         // Output a pretty table
         $table = $this->getHelperSet()->get('table');
         $table
-            ->setHeaders($headers)
-            ->setRows($rows)
-            ->render($this->getOutput());
+          ->setHeaders($headers)
+          ->setRows($rows)
+          ->render($this->getOutput());
+
     }
 
     /**
@@ -97,9 +86,7 @@ class ListAllCommand extends Command {
     }
 
     /**
-     * Get the console command arguments.
-     *
-     * @return array
+     * No arguments.
      */
     protected function getArguments()
     {
@@ -107,16 +94,13 @@ class ListAllCommand extends Command {
     }
 
     /**
-     * Get the console command options.
-     *
-     * @return array
+     * Just the `--archived` option
      */
     protected function getOptions()
     {
         return array(
             array('archived', 'a', InputOption::VALUE_NONE,
-                'use archived lists?'),
+                'Use archived lists?'),
         );
     }
-
 }

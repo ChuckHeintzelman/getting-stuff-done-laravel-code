@@ -5,6 +5,14 @@ use GSD\Entities\ListInterface;
 interface TodoRepositoryInterface {
 
     /**
+     * Delete the todo list
+     * @param string $id ID of the list
+     * @param bool $archive Is the list archived?
+     * @return boolean True if successful
+     */
+    public function delete($id, $archived = false);
+
+    /**
      * Does the todo list exist?
      * @param  string $id ID of the list
      * @param  boolean $archived Check for archived lists only?
@@ -34,11 +42,4 @@ interface TodoRepositoryInterface {
      * @return boolean True if successful
      */
     public function save(ListInterface $list);
-
-    /**
-     * Delete the todo list
-     * @param string $id ID of the list
-     * @return boolean True if successful
-     */
-    public function delete($id, $archived = false);
 }
