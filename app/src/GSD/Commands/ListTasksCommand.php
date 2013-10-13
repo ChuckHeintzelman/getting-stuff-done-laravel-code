@@ -1,5 +1,6 @@
 <?php namespace GSD\Commands;
 
+use Config;
 use Symfony\Component\Console\Input\InputOption;
 use Todo;
 
@@ -35,6 +36,8 @@ class ListTasksCommand extends CommandBase {
         }
 
         // Gather rows to display
+        $completeFmt = Config::get('todo.dateCompleteFormat');
+        $dueFmt = Config::get('todo.dateDueFormat');
         $rows = array();
         $rowNo = 1;
         foreach ($list->tasks() as $task)
@@ -46,14 +49,14 @@ class ListTasksCommand extends CommandBase {
                     '',
                     'done',
                     $task->description(),
-                    'Done '.$task->dateCompleted()->format('n/j/y'),
+                    'Done '.$task->dateCompleted()->format($completeFmt),
                 );
             }
             elseif ($task->isNextAction() or ! $nextOnly)
             {
                 $next = ($task->isNextAction()) ? 'YES' : '';
                 $due = ($task->dateDue()) ?
-                    'Due '.$task->dateDue()->format('M-j') : '';
+                    'Due '.$task->dateDue()->format($dueFmt) : '';
                 $rows[] = array(
                     $rowNo++,
                     $next,
@@ -66,7 +69,7 @@ class ListTasksCommand extends CommandBase {
         // Output a pretty table
         $title = ($nextOnly) ? 'Next Actions' :
             (($skipDone) ? "Active Tasks" : "All Tasks");
-        $this->info("$title in list '+$name'\n");
+        $this->info("$title in list '+$name'");
         if (count($rows) == 0)
         {
             $this->error("Nothing found");
