@@ -7,19 +7,9 @@ use Todo;
 
 class CreateCommand extends CommandBase {
 
-    /**
-     * The console command name.
-     *
-     * @var string
-     */
     protected $name = 'gsd:create';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Create new list.';
+    protected $nameArgumentDescription = 'List name to create.';
 
     /**
      * Execute the console command.
@@ -38,8 +28,7 @@ class CreateCommand extends CommandBase {
         {
             if ( ! ($name = $this->askForListId(false, true)))
             {
-                $this->outputErrorBox('*aborted*');
-                exit;
+                $this->abort();
             }
             $title = $this->ask("Enter list title (enter to skip)?");
             $subtitle = $this->ask("Enter list subtitle (enter to skip)?");
@@ -48,21 +37,18 @@ class CreateCommand extends CommandBase {
         // Validate arguments
         else if (is_null($name))
         {
-            throw new \InvalidArgumentException(
-                'Must specify +name if title or subtitle used');
+            $this->abort('Must specify +name if title or subtitle used');
         }
         else if ($name[0] != '+')
         {
-            throw new \InvalidArgumentException(
-                'The list name must begin with a plus (+)');
+            $this->abort('The list name must begin with a plus (+)');
         }
         else
         {
             $name = substr($name, 1);
             if ($this->repository->exists($name))
             {
-                throw new \InvalidArgumentException(
-                    "The list '$name' already exists");
+                $this->abort("The list '$name' already exists");
             }
         }
 
@@ -77,18 +63,6 @@ class CreateCommand extends CommandBase {
         }
 
         $this->info("List '$name' successfully created");
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return array(
-            array('+name', InputArgument::OPTIONAL, 'List name to create'),
-        );
     }
 
     /**

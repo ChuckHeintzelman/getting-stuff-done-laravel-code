@@ -19,7 +19,7 @@ class EditTaskCommand extends CommandBase {
      */
     public function fire()
     {
-        // Should we prompt for everything
+        // Should we prompt for everything?
         $promptAll = all_null(
             $this->argument('+name'),
             $this->argument('task-number'),
@@ -28,11 +28,10 @@ class EditTaskCommand extends CommandBase {
         );
 
         // Get list
-        $name = $this->getListId();
+        $name = $this->getListId('Select list with task to edit:');
         if (is_null($name))
         {
-            $this->outputErrorBox('EditTask aborted');
-            return;
+            $this->abort();
         }
         $list = Todo::get($name);
 
@@ -40,8 +39,7 @@ class EditTaskCommand extends CommandBase {
         $taskNo = $this->getTaskNo($list, true, true, false);
         if (is_null($taskNo))
         {
-            $this->outputErrorBox('EditTask aborted');
-            return;
+            $this->abort();
         }
 
         $currDescript = $list->taskGet($taskNo, 'description');
@@ -53,11 +51,11 @@ class EditTaskCommand extends CommandBase {
             $currActionState = ($currAction) ? 'is' : 'is not';
             $this->line("Current description: $currDescript");
             $descript = $this->ask("New description (enter to skip)?");
-            $this->line("Task $currActionState currently a Next Action.");
+            $this->line("Task $currActionState currently a Next Aciton.");
             $next = $this->ask("Is Next Action (enter skip, yes or no)?");
         }
 
-        // Pull description and next action from command line
+        // Pull description and next action from command
         else
         {
             $descript = $this->option('descript');
@@ -68,8 +66,7 @@ class EditTaskCommand extends CommandBase {
         if ((is_null($descript) || $descript == $currDescript) &&
             (is_null($action)   || $action == $currAction))
         {
-            $this->outputErrorBox('Nothing changed');
-            return;
+            $this->abort("Nothing changed");
         }
 
         // Make changes and save the list
@@ -89,8 +86,6 @@ class EditTaskCommand extends CommandBase {
 
     /**
      * Get the console command options.
-     *
-     * @return array
      */
     protected function getOptions()
     {
@@ -101,4 +96,5 @@ class EditTaskCommand extends CommandBase {
                 'Is task a next action (yes|no).'),
         ), parent::getOptions());
     }
+
 }

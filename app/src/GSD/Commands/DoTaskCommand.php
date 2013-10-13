@@ -16,19 +16,17 @@ class DoTaskCommand extends CommandBase {
      */
     public function fire()
     {
-        $name = $this->getListId();
+        $name = $this->getListId('Select list with task to mark complete:');
         if (is_null($name))
         {
-            $this->outputErrorBox('DoTask aborted');
-            return;
+            $this->abort();
         }
         $list = Todo::get($name);
 
         $taskNo = $this->getTaskNo($list, true, true, false);
         if (is_null($taskNo))
         {
-            $this->outputErrorBox("DoTask aborted");
-            return;
+            $this->abort();
         }
 
         $description = $list->taskGet($taskNo, 'description');

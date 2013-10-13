@@ -6,18 +6,7 @@ use Todo;
 
 class UncreateCommand extends CommandBase {
 
-    /**
-     * The console command name.
-     *
-     * @var string
-     */
     protected $name = 'gsd:uncreate';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Destroy an empty list.';
 
     /**
@@ -28,32 +17,30 @@ class UncreateCommand extends CommandBase {
     public function fire()
     {
         // Prompt user for list-id
-        if ( ! ($name = $this->askForListId(true, true)))
+        $selectTitle = 'Select list to uncreate:';
+        $name = $this->askForListId(true, true, false, $selectTitle);
+        if (is_null($name))
         {
-            $this->outputErrorBox('*aborted*');
-            exit;
+            $this->abort();
         }
 
         // Validate list has no tasks
         $list = Todo::get($name);
         if ($list->taskCount() > 0)
         {
-            throw new \UnexpectedValueException(
-                'Cannot uncreate a list with tasks');
+            $this->abort('Cannot uncreate a list with tasks');
         }
 
         // Delete list
         if ( ! $this->repository->delete($name))
         {
-            throw new \RuntimeException("Repository couldn't delete list '$name'");
+            $this->abort("Repository couldn't delete list '$name'");
         }
         $this->info("The list '$name' is now in the big bitbucket in the sky");
     }
 
     /**
-     * Get the console command arguments.
-     *
-     * @return array
+     * No arguments.
      */
     protected function getArguments()
     {
@@ -61,13 +48,10 @@ class UncreateCommand extends CommandBase {
     }
 
     /**
-     * Get the console command options.
-     *
-     * @return array
+     * No options.
      */
     protected function getOptions()
     {
         return array();
     }
-
 }

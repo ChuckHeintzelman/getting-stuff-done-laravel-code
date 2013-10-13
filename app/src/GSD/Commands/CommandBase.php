@@ -12,7 +12,6 @@ class CommandBase extends Command {
     protected $repository;
     protected $nameArgumentDescription = 'List name.';
     protected $taskNoDescription = null;
-    protected $askForListAction = 'destroy';
 
     /**
      * Constructor
@@ -24,25 +23,25 @@ class CommandBase extends Command {
     }
 
     /**
-     * Prompt the user ofr a list id
+     * Prompt the user for a list id
      * @param bool $existing Prompt for existing list or new list?
-     * @param bool $allowCancel Allow user to cancel?
-     * @param bool $archived Use archived lists?
-     * @return mixed String list id or null if user cancels
+     * @param bool $allowCancel Allow user to cancel
+     * @param bool $archived Prompt for archived list?
+     * @param string $selectTitle Title to use if list selection occurs.
+     * @return mixed string list id or null if user cancels
      */
     public function askForListId($existing = true, $allowCancel = true,
-        $archived = false)
+        $archived = false, $selectTitle = 'Select a list:')
     {
         if ($existing)
         {
-            $title = "Choose which list to $this->askForListAction:";
-            $abort = "cancel - do not $this->askForListAction a list";
+            $abort = "Cancel";
             $choices = Todo::allLists($archived);
             if (count($choices) == 0)
             {
                 throw new \RuntimeException('No lists to choose from');
             }
-            $result = pick_from_list($this, $title, $choices, 0, $abort);
+            $result = pick_from_list($this, $selectTitle, $choices, 0, $abort);
             if ($result == -1)
             {
                 return null;
@@ -50,7 +49,9 @@ class CommandBase extends Command {
             return $choices[$result-1];
         }
 
-        $prompt = 'Enter name of new list';
+        $prompt = 'Enter name of new';
+        if ($archived) $prompt .= ' archived';
+        $prompt .= ' list';
         if ($allowCancel) $prompt .= ' (enter to cancel)';
         $prompt .= '?';
         while(true)
@@ -89,7 +90,7 @@ class CommandBase extends Command {
 
     /**
      * The console command arguments. Derived classes could replace this
-     * method entirely, or merge its own arguments with these.
+     * method entirely, or merge its own arguments with thext
      *
      * @return array of argument definitions
      */
@@ -103,6 +104,7 @@ class CommandBase extends Command {
                 InputArgument::OPTIONAL,
                 $this->taskNoDescription
             );
+
         }
         $args[] = array(
             '+name',
@@ -114,7 +116,7 @@ class CommandBase extends Command {
 
     /**
      * The console command options. Derived classes could replace this
-     * method entirely, or merge its own options with these
+     * method entirely, or merge their own options with these.
      *
      * @return array
      */
@@ -122,12 +124,12 @@ class CommandBase extends Command {
     {
         return array(
             array('listname', 'l', InputOption::VALUE_REQUIRED,
-                "Source of list name, 'prompt' or 'default'"),
+                "Source of list name, 'prompt' or 'default'."),
         );
     }
 
     /**
-     * Get the list id (of existing lists)
+     * Get the list id (of existing lists).
      *
      * This can happen in a variety of ways. If specified as an argument, then
      * it's returned (without the + of course). Otherwise, look to see if the
@@ -135,10 +137,11 @@ class CommandBase extends Command {
      * Finally, we fallback to the method specified by Config's
      * 'app.gsd.noListPrompt' setting
      *
-     * @return string Existing list id (or null if user aborts)
+     * @param string $selectTitle Title to use if list selection occurs
+     * @return $string Existing list id (or null if user aborts)
      * @throws InvalidArgumentException If something's not right
      */
-    protected function getListId()
+    protected function getListId($selectTitle = 'Select a list:')
     {
         $archived = $this->input->hasOption('archived') and
                     $this->option('archived');
@@ -150,7 +153,7 @@ class CommandBase extends Command {
             if ( ! is_null($listnameOption))
             {
                 throw new \InvalidArgumentException(
-                    'Cannot specify +name and --listname together');
+                    'Cannot specify $name and --listname together');
             }
         }
         else
@@ -161,7 +164,7 @@ class CommandBase extends Command {
             }
             if ($listnameOption == 'prompt')
             {
-                $name = $this->askForListId(true, true, $archived);
+                $name = $this->askForListId(true, true, $archived, $selectTitle);
                 if (is_null($name))
                 {
                     return null;
@@ -183,6 +186,7 @@ class CommandBase extends Command {
         return $name;
     }
 
+
     /**
      * Get the task # of a list, either from the argument or prompt the user.
      * Keep in mind the # present to the user always begins with 1, but the
@@ -194,8 +198,8 @@ class CommandBase extends Command {
      * @param bool $showComplete Show completed tasks in prompt list
      * @return mixed NULL if user aborts, otherwise integer of task number
      */
-    protected function getTaskNo(\GSD\Entities\ListInterface $list,
-        $showNext, $showNormal, $showComplete)
+    protected function getTaskNo(\GSD\Entities\ListInterface $list, $showNext,
+        $showNormal, $showComplete)
     {
         // Return the # if provided on command line
         $taskNo = $this->argument('task-number');
@@ -225,8 +229,8 @@ class CommandBase extends Command {
         }
 
         // Let user pick from list, return result
-        $result = pick_from_list($this, $this->taskNoDescription,
-            $tasks, 0, 'cancel, do not perform action');
+        $selectTitle = rtrim($this->taskNoDescription, '.') . ':';
+        $result = pick_from_list($this, $selectTitle, $tasks, 0, "Cancel");
         if ($result == -1)
         {
             return null;
@@ -234,4 +238,13 @@ class CommandBase extends Command {
         return $result - 1;
     }
 
+    /**
+     * Output an error message and die
+     * @param string $message Optional message to output
+     */
+    protected function abort($message = '*aborted*')
+    {
+        $this->outputErrorBox($message);
+        exit;
+    }
 }
