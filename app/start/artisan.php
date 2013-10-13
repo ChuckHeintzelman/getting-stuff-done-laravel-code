@@ -7,5 +7,6 @@ Artisan::add(new GSD\Commands\EditListCommand);
 Artisan::add(new GSD\Commands\EditTaskCommand);
 Artisan::add(new GSD\Commands\ListAllCommand);
 Artisan::add(new GSD\Commands\ListTasksCommand);
+Artisan::add(new GSD\Commands\RenameListCommand);
 Artisan::add(new GSD\Commands\UnarchiveListCommand);
 Artisan::add(new GSD\Commands\UncreateCommand);
