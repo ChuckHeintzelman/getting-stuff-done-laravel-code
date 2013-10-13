@@ -157,6 +157,15 @@ class TodoList implements ListInterface {
         return $this->save();
     }
 
+    /**
+     * Delete the task list
+     * @return boolean TRUE on success
+     */
+    public function delete()
+    {
+        return $this->repository->delete($this->id(), $this->isArchived());
+    }
+
     // Task operations -------------------------
 
     /**

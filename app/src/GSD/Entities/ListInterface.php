@@ -60,6 +60,12 @@ interface ListInterface {
      */
     public function save($force = false);
 
+    /**
+     * Delete the task list
+     * @return boolean TRUE on success
+     */
+    public function delete();
+
     // Task operations -------------------------
 
     /**
