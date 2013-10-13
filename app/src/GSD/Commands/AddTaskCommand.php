@@ -19,18 +19,17 @@ class AddTaskCommand extends CommandBase {
      */
     public function fire()
     {
-        $name = $this->getListId();
+        $name = $this->getListId('Select list to add the task to:');
         if (is_null($name))
         {
-            $this->outputErrorBox("AddTask aborted");
-            return;
+            $this->abort();
         }
         $list = Todo::get($name);
 
         $task = App::make('GSD\Entities\TaskInterface');
         if ( ! $task->setFromString($this->argument('task')))
         {
-            throw new \InvalidArgumentException('Cannot parse task string');
+            $this->abort('Cannot parse task string');
         }
         $type = 'Todo';
         if ($this->option('action'))
@@ -61,7 +60,8 @@ class AddTaskCommand extends CommandBase {
     {
         return array_merge(parent::getOptions(), array(
             array('action', 'a', InputOption::VALUE_NONE,
-                'Make task a Next Action.'),
+            'Make task a Next Action.'),
         ));
     }
+
 }

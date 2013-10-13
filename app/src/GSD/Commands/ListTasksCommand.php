@@ -17,11 +17,10 @@ class ListTasksCommand extends CommandBase {
      */
     public function fire()
     {
-        $name = $this->getListId();
+        $name = $this->getListId('Select list to show tasks:');
         if (is_null($name))
         {
-            $this->outputErrorBox('ListTasks aborted');
-            return;
+            $this->abort();
         }
         $list = Todo::get($name);
 
@@ -29,10 +28,9 @@ class ListTasksCommand extends CommandBase {
         $skipDone = $this->option('skip-done');
         if ($nextOnly and $skipDone)
         {
-            $this->outputErrorBox(
+            $this->abort(
                 "Options --action and --skip-done can't be used together."
             );
-            return;
         }
 
         // Gather rows to display
@@ -67,13 +65,12 @@ class ListTasksCommand extends CommandBase {
         }
 
         // Output a pretty table
-        $title = ($nextOnly) ? 'Next Actions' :
+        $title = ($nextOnly) ? "Next Actions" :
             (($skipDone) ? "Active Tasks" : "All Tasks");
         $this->info("$title in list '+$name'");
         if (count($rows) == 0)
         {
-            $this->error("Nothing found");
-            return;
+            $this->abort("No tasks in list");
         }
         $table = $this->getHelperSet()->get('table');
         $table
@@ -84,16 +81,13 @@ class ListTasksCommand extends CommandBase {
 
     /**
      * Get the console command options.
-     *
-     * @return array
      */
     protected function getOptions()
     {
         return array_merge(array(
-            array('action', 'a', InputOption::VALUE_NONE,
-                'Show only next actions.', null),
-            array('skip-done', 'x', InputOption::VALUE_NONE,
-                'Skip completed actions.', null),
+            array('action', 'a', InputOption::VALUE_NONE, 'Show only next actions.', null),
+            array('skip-done', 'x', InputOption::VALUE_NONE, 'Skip completed actions.', null),
         ), parent::getOptions());
     }
+
 }

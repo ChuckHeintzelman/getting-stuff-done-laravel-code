@@ -7,7 +7,6 @@ class UnarchiveListCommand extends CommandBase {
 
     protected $name = 'gsd:unarchive';
     protected $description = 'Unarchive a todo list.';
-    protected $askForListAction = 'unarchive';
 
     /**
      * Execute the console command.
@@ -17,11 +16,11 @@ class UnarchiveListCommand extends CommandBase {
     public function fire()
     {
         // Prompt user for list name
-        $name = $this->askForListId(true, true, true);
+        $selectTitle = 'Select list to unarchive:';
+        $name = $this->askForListId(true, true, true, $selectTitle);
         if (is_null($name))
         {
-            $this->outputErrorBox('*Unarchive aborted*');
-            return;
+            $this->abort();
         }
 
         // Warn if unarchived version exists
@@ -34,13 +33,12 @@ class UnarchiveListCommand extends CommandBase {
             $this->outputErrorBox($msg);
         }
 
-        // Ask if user is sure
+        // Ask if user is sure?
         $result = $this->ask(
             "Are you sure you want to unarchive '$name' (yes/no)?");
         if ( ! str2bool($result))
         {
-            $this->outputErrorBox('*Unarchive aborted*');
-            return;
+            $this->abort();
         }
 
         // Load existing list and save as unarchived
@@ -51,8 +49,7 @@ class UnarchiveListCommand extends CommandBase {
         // Delete existing archived list
         if ( ! $this->repository->delete($name, true))
         {
-            $this->outputErrorBox('ERROR deleting archived version.');
-            return;
+            $this->abort('ERROR deleting archived version.');
         }
         $this->info("List '$name' has been unarchived");
     }
@@ -72,4 +69,5 @@ class UnarchiveListCommand extends CommandBase {
     {
         return array();
     }
+
 }

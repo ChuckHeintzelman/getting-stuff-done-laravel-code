@@ -7,7 +7,6 @@ class ArchiveListCommand extends CommandBase {
 
     protected $name = 'gsd:archive';
     protected $description = 'Archive a todo list.';
-    protected $askForListAction = 'archive';
 
     /**
      * Execute the console command.
@@ -17,32 +16,30 @@ class ArchiveListCommand extends CommandBase {
     public function fire()
     {
         // Get list name to archive
-        $name = $this->askForListId();
+        $selectTitle = 'Select list to archive:';
+        $name = $this->askForListId(true, true, false, $selectTitle);
         if (is_null($name))
         {
-            $this->outputErrorBox('*Archive aborted*');
-            return;
+            $this->abort();
         }
         if (Config::get('todo.defaultList') == $name)
         {
-            $this->outputErrorBox('Cannot archive default list');
-            return;
+            $this->abort('Cannot archive default list');
         }
 
         // Warn if list exists
         if ($this->repository->exists($name, true))
         {
-            $msg = "WARNING\n\n"
+            $msg = "WARNING!\n\n"
                  . "  An archived version of the list '$name' exists.\n"
-                 . "  This action will destory the old archived list.";
+                 . "  This action will destroy the old archived version.";
             $this->outputErrorBox($msg);
         }
         $result = $this->ask(
             "Are you sure you want to archive '$name' (yes/no)?");
         if ( ! str2bool($result))
         {
-            $this->outputErrorBox("*Archive aborted*");
-            return;
+            $this->abort();
         }
 
         // Archive the list
@@ -61,11 +58,10 @@ class ArchiveListCommand extends CommandBase {
 
     /**
      * No options.
-     *
-     * @return array
      */
     protected function getOptions()
     {
         return array();
     }
+
 }

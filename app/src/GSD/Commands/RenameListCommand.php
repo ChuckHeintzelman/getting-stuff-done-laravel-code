@@ -8,7 +8,6 @@ class RenameListCommand extends CommandBase {
 
     protected $name = 'gsd:rename';
     protected $description = 'Rename a list.';
-    protected $askForListAction = 'rename';
 
     /**
      * Execute the console command.
@@ -19,24 +18,22 @@ class RenameListCommand extends CommandBase {
     {
         // Get archived flag and list to rename
         $archived = $this->option('archived');
-        $name = $this->askForListId(true, true, $archived);
+        $selectTitle = 'Select list to rename:';
+        $name = $this->askForListId(true, true, $archived, $selectTitle);
         if (is_null($name))
         {
-            $this->outputErrorBox('*aborted*');
-            return;
+            $this->abort();
         }
         if ( ! $archived && Config::get('todo.defaultList') == $name)
         {
-            $this->outputErrorBox('Cannot rename default list');
-            return;
+            $this->abort('Cannot rename default list');
         }
 
-        // Prompt for new list name
+        // Prompt for new list
         $newName = $this->askForListId(false, true, $archived);
         if (is_null($name))
         {
-            $this->outputErrorBox('*aborted*');
-            return;
+            $this->abort();
         }
 
         // Load existing list, save with new name

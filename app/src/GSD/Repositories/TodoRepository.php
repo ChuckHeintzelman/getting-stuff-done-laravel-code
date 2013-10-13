@@ -23,8 +23,7 @@ class TodoRepository implements TodoRepositoryInterface {
         }
         if ( ! File::isDirectory($this->path.'archived'))
         {
-            throw new \RuntimeException("Directory doesn't exist: $this->path".
-                'archived');
+            throw new \RuntimeException("Directory doesn't exist: $this->path".'archived');
         }
         $this->extension = Config::get('todo.extension');
         if ( ! starts_with($this->extension, '.'))
@@ -36,6 +35,7 @@ class TodoRepository implements TodoRepositoryInterface {
     /**
      * Delete the todo list
      * @param string $id ID of the list
+     * @param bool $archive Is the list archived?
      * @return boolean True if successful
      */
     public function delete($id, $archived = false)
@@ -88,8 +88,7 @@ class TodoRepository implements TodoRepositoryInterface {
     {
         if ( ! $this->exists($id, $archived))
         {
-            throw new \InvalidArgumentException(
-                "List with id=$id, archived=$archived not found");
+            throw new \InvalidArgumentException("List with id=$id, archived=$archived not found");
         }
         $lines = explode("\n", File::get($this->fullpath($id, $archived)));
 
@@ -166,6 +165,9 @@ class TodoRepository implements TodoRepositoryInterface {
 
     /**
      * Return the path to the list file
+     * @param string $id ID of the list
+     * @param boolean $archived Is in archived directory.
+     * @return string The full filepath to list
      */
     protected function fullpath($id, $archived)
     {
