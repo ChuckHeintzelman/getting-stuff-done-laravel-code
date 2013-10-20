@@ -20,6 +20,11 @@ class CommandBase extends Command {
     {
         parent::__construct();
         $this->repository = App::make('GSD\Repositories\TodoRepositoryInterface');
+        $aliases = Config::get('todo.aliases');
+        if (array_key_exists($this->name, $aliases))
+        {
+            $this->setAliases($aliases[$this->name]);
+        }
     }
 
     /**
