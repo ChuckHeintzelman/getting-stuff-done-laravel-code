@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# Simple bash script to call artisan gsd:COMMAND
+#
+ARTISAN=/home/chuck/gsd/artisan
+MACROS="lsna"
+COMMANDS="add archive create do edit editlist la list listall ls move mv remove rename rm unarchive uncreate"
+
+# Process Macros
+for cmd in $MACROS
+do
+	if [ "$cmd" == "$1" ]; then
+		# Only the one macro
+		$ARTISAN gsd:listall --tasks=next
+		exit
+	fi
+done
+
+# Process Commands
+for cmd in $COMMANDS
+do
+	if [ "$cmd" == "$1" ]; then
+		$ARTISAN "gsd:$@"
+		exit
+	fi
+done
+
+# Output usage
+echo "Usage: gsd command [options]"
+echo
+echo "Where command is"
+echo "   add        Add a new task to a list."
+echo "   archive    Archive a todo list."
+echo "   create     Create new todo list."
+echo "   do         Mark a task as complete."
+echo "   edit       Edit a task."
+echo "   editlist   Edit a list's title or subtitle."
+echo "   list       List tasks."
+echo "   listall|la List all todo lists (and possibly tasks)."
+echo "   ls         List tasks."
+echo "   lsna       List Next Actions in all todo lists."
+echo "   move|mv    Move a task between todo lists."
+echo "   remove|rm  Remove a task from a todo list."
+echo "   rename     Rename a todo list."
+echo "   unarchive  Unarchive a todo list."
+echo "   uncreate   Destroy an empty list."
+echo
+echo "Use gsd command -h for help on a command";

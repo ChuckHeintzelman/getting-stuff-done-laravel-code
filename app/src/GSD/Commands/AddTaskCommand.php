@@ -8,7 +8,7 @@ use Todo;
 
 class AddTaskCommand extends CommandBase {
 
-    protected $name = 'gsd:addtask';
+    protected $name = 'gsd:add';
     protected $description = 'Add a new task to a list.';
     protected $nameArgumentDescription = 'List name to add the task to.';
 
