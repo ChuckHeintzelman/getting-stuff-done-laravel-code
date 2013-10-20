@@ -5,7 +5,7 @@ This code is the companion for the book [Getting Stuff Done with Larvel](https:/
 
 Each branch in this repository contains source code as it is at the end of each chapter named in the branch.
 
-This is from Chapter 5@ - The MoveTaskCommand
+This is from Chapter 52 - The MoveTaskCommand
 
 Changes in this chapter:
 
