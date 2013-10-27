@@ -17,9 +17,13 @@
       {{ HTML::script('/js/jquery.js') }}
       {{ HTML::script('/js/bootstrap.min.js') }}
       {{ HTML::script('/js/gsd.js') }}
+      <script type="text/javascript">
+        gsd.defaultList = "{{ $default_list }}";
+      </script>
     @show
   </head>
   <body>
+    @include("partials.topnavbar")
     @include("partials.notifications")
     @yield('content')
   </body>
