@@ -39,5 +39,6 @@
       </div>
     </div>
     @include('partials.taskmodal')
+    @include('partials.listmodal')
   </body>
 </html>
