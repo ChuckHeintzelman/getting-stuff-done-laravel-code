@@ -5,11 +5,9 @@ This code is the companion for the book [Getting Stuff Done with Larvel](https:/
 
 Each branch in this repository contains source code as it is at the end of each chapter named in the branch.
 
-This is from Chapter 63 - The Side Navigation
+This is from Chapter 64 - The Tasks
 
 Changes in this chapter:
 
-* Updated layout to final structure
-* Created sidebar partial
-* Finished ListController's index method
-* Added javascript to load the lists in the sidebar
+* Changed live.blade.php to the final structure
+* Added javascript to display the tasks
