@@ -70,11 +70,40 @@ var gsd = (function()
     }
 
     /**
+     * Display the task modal box
+     * @param string title Title of the modal box
+     * @param integer index Task index, -1 for new task
+     */
+    function taskboxShow(title, index)
+    {
+        var task = (index == -1) ? {} : currentList.tasks[index];
+        $("#task-index").val(index);
+        $("#taskbox-title").text(title);
+        $("#task-next").prop("checked", (task.isNext === true));
+        $("#task-descript").val(task.descript);
+        if (task.dateDue)
+        {
+            var d = new Date(task.dateDue);
+            $("#task-due").val(d.toDateString());
+        }
+        else
+        {
+            $("#task-due").val("");
+        }
+        $("#taskbox")
+            .modal("show")
+            .on("shown.bs.modal", function()
+            {
+                $("#task-descript").focus().select();
+            });
+    }
+
+    /**
      * Handle click on the add task button
      */
     function buttonAddClick()
     {
-        gsd.errorMessage("gsd.buttonAddClick() not done");
+        taskboxShow("Add New Task", -1);
         return false;
     }
 
@@ -178,7 +207,7 @@ var gsd = (function()
         if (task.dateDue)
         {
             d = new Date(task.dateDue);
-            tml.push(' <span class="label label-info">');
+            html.push(' <span class="label label-info">');
             html.push('due ' + d.toDateString());
             html.push('</span>');
         }
@@ -403,7 +432,7 @@ var gsd = (function()
          */
         doEdit: function(index)
         {
-            gsd.errorMessage("gsd.doEdit() not done");
+            taskboxShow("Edit Task", index);
         },
 
         /**
@@ -429,6 +458,47 @@ var gsd = (function()
 
             // And save the list
             saveCurrentList("Task successfully removed.", "doDelete");
+        },
+
+        /**
+         * Handle adding new tasks or updating existin tasks
+         */
+        taskboxSave: function()
+        {
+            var index = parseInt($("#task-index").val());
+            var dueDate = $("#task-due").val();
+            var task = {
+                isNext: $("#task-next").prop("checked"),
+                isCompleted: false,
+                dateCompleted: null,
+                descript: $("#task-descript").val()
+            };
+            if (dueDate === "")
+            {
+                dueDate = null;
+            }
+            else
+            {
+                try {
+                    dueDate = Date.parse(dueDate);
+                } catch (err) {
+                    dueDate = null;
+                }
+                if (isNaN(dueDate))
+                    dueDate = null;
+            }
+            task.dateDue = dueDate;
+            if (index < 0)
+            {
+                currentList.tasks.push(task);
+            }
+            else
+            {
+                currentList.tasks[index] = task;
+            }
+
+            $("#taskbox").modal("hide");
+            saveCurrentList("Task successfully saved.", "taskboxSave");
         }
 
     };

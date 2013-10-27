@@ -38,5 +38,6 @@
         </div>
       </div>
     </div>
+    @include('partials.taskmodal')
   </body>
 </html>
