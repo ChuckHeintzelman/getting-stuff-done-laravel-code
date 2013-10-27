@@ -101,7 +101,34 @@ var gsd = (function()
      */
     function menuRenameClick()
     {
-        gsd.errorMessage("gsd.menuRenameClick() not done");
+        $(".dropdown-menu").dropdown("toggle");
+        var dest = prompt("New name for list '" + currentList.name + "'?");
+        if (!dest)
+        {
+            gsd.errorMessage("Rename canceled");
+            return false;
+        }
+        var url = '/lists/' + currentList.name + '/rename/' + dest;
+        if (currentList.archived) url += '?archived=1';
+        $.ajax({
+            url: url,
+            method: "POST",
+            error: function(hdr, status, error)
+            {
+                gsd.errorMessage("menuRenameClick " + status + ' - ' + error);
+            },
+            success: function(data)
+            {
+                if (data && data.error)
+                {
+                    gsd.errorMessage(data.error);
+                    return;
+                }
+                gsd.loadList(dest, currentList.archived);
+                gsd.successMessage("Rename successful.");
+            }
+        });
+
         return false;
     }
 
@@ -110,7 +137,17 @@ var gsd = (function()
      */
     function menuCreateClick()
     {
-        gsd.errorMessage("gsd.menuCreateClick() not done");
+        $(".dropdown-menu").dropdown("toggle");
+        $("#listbox-title").html("Create New List");
+        $("#list-id").val("");
+        $("#list-title").val("");
+        $("#list-subtitle").val("");
+        $("#listbox")
+            .modal("show")
+            .on("shown.bs.modal", function()
+            {
+                $("#list-id").focus().select();
+            });
         return false;
     }
 
@@ -544,7 +581,40 @@ var gsd = (function()
 
             $("#taskbox").modal("hide");
             saveCurrentList("Task successfully saved.", "taskboxSave");
-        }
+        },
 
+        /**
+         * Handle creating new list
+         */
+        listboxSave: function()
+        {
+            var data = {
+                name: $("#list-id").val(),
+                title: $("#list-title").val(),
+                subtitle: $("#list-subtitle").val()
+            };
+
+            $.ajax({
+                url: "/lists",
+                method: "POST",
+                data: data,
+                error: function(hdr, status, error)
+                {
+                    gsd.errorMessage("listboxSave " + status + ' - ' + error);
+                    $("#listbox").modal("hide");
+                },
+                success: function(data)
+                {
+                    $("#listbox").modal("hide");
+                    if (data && data.error)
+                    {
+                        gsd.errorMessage(data.error);
+                        return;
+                    }
+                    gsd.loadList(data.name, false);
+                    gsd.successMessage("List successfully created.");
+                }
+            });
+        }
     };
 })();

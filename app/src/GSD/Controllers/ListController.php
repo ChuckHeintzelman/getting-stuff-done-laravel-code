@@ -56,7 +56,37 @@ class ListController extends \Controller {
      */
     public function store()
     {
-        return Response::json(array('error' => 'store not done'));
+        try
+        {
+            $name = strtolower(Input::get("name"));
+            $title = Input::get("title");
+            if (!$title) $title = ucfirst($name);
+            $subtitle = Input::get("subtitle");
+
+            if (empty($name))
+                throw new \RuntimeException("List Name $name is required");
+            if ($this->repository->exists($name, false))
+                throw new \RuntimeException("List '$name' already exists");
+
+            $list = Todo::makeList($name, $title);
+            if ($subtitle)
+            {
+                $list->set('subtitle', $subtitle)->save();
+            }
+
+            $result = array(
+                'success' => true,
+                'name' => $name,
+            );
+        }
+        catch (\Exception $e)
+        {
+            $result = array(
+                'error' => $e->getMessage()
+            );
+        }
+
+        return Response::json($result);
     }
 
     /**
@@ -227,7 +257,35 @@ class ListController extends \Controller {
      */
     public function rename($source, $dest)
     {
-        return Response::json(array('error' => 'renane not done'));
+        $archived = !! Input::get('archived');
+        $source = trim($source);
+        $dest = trim($dest);
+        try
+        {
+            if (empty($source))
+                throw new \RuntimeException("Source list name is required");
+            if (empty($dest))
+                throw new \RuntimeException("Destination list name required");
+            if ($source == Config::get('todo.defaultList') && ! $archived)
+                throw new \RuntimeException("Cannot rename default list");
+            if ($this->repository->exists($dest, $archived))
+                throw new \RuntimeException("Destination list exists");
+
+            // Load existing list, save with new name, then delete old one
+            $list = Todo::get($source, $archived);
+            $newList = clone $list;
+            $newList->set('id', $dest);
+            $newList->save();
+            $list->delete();
+
+            $return = array('success' => true);
+        }
+        catch (\Exception $e)
+        {
+            $return = array('error' => $e->getMessage());
+        }
+
+        return Response::json($return);
     }
 
     /**
