@@ -47,7 +47,52 @@ var gsd = (function()
      */
     function menuArchiveClick()
     {
-        gsd.errorMessage("gsd.menuArchiveClick() not done");
+        var url = "/lists/" + currentList.name;
+        if (currentList.archived)
+        {
+            url += '/unarchive';
+            $.ajax({
+                url: url,
+                method: "POST",
+                error: function(hdr, status, error)
+                {
+                    gsd.errorMessage("menuArchiveClick " + status + ' - ' + error);
+                },
+                success: function(data)
+                {
+                    if (data && data.error)
+                    {
+                        gsd.errorMessage(data.error);
+                        return;
+                    }
+                    gsd.loadList(currentList.name, false);
+                    gsd.successMessage("List successfully unarchived.");
+                }
+            });
+
+            return false;
+        }
+
+        // The archive version
+        url += '/archive';
+        $.ajax({
+            url: url,
+            method: "POST",
+            error: function(hdr, status, error)
+            {
+                gsd.errorMessage("menuArchiveClick " + status + ' - ' + error);
+            },
+            success: function(data)
+            {
+                if (data && data.error)
+                {
+                    gsd.errorMessage(data.error);
+                    return;
+                }
+                gsd.loadList(currentList.name, true);
+                gsd.successMessage("List successfully archived.");
+            }
+        });
         return false;
     }
 
