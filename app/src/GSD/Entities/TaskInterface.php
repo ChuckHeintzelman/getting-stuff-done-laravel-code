@@ -35,10 +35,12 @@ interface TaskInterface {
     public function isNextAction();
 
     /**
-     * Set whether task is complete. Automatically updates dateCompleted.
+     * Set whether task is complete.
      * @param bool $complete
+     * @param mixed $when If null then uses current date/time, otherwise
+     *                    a Carbon object or date/time string
      */
-    public function setIsComplete($complete);
+    public function setIsComplete($complete, $when = null);
 
     /**
      * Set task description

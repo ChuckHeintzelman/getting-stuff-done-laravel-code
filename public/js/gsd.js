@@ -274,6 +274,37 @@ var gsd = (function()
         $("#completed-tasks").html(completed.join("\n"));
     }
 
+    /**
+     * Save the current list, then reload everything
+     * @param string success_msg The message to show on success
+     * @param string from Name of method we're called from, for errors
+     */
+    function saveCurrentList(success_msg, from)
+    {
+        $.ajax({
+            url: "/lists/" + currentList.name,
+            method: "PUT",
+            data: currentList,
+            error: function(hdr, status, error)
+            {
+                gsd.errorMessage("saveCurrentList " + status + ' - ' +
+                    error + ", from " + from);
+            },
+            success: function(data)
+            {
+                if (data && data.error)
+                {
+                    gsd.errorMessage("saveCurrentList error: " +
+                        data.error + ", from " + from);
+                    return;
+                }
+
+                gsd.loadList(currentList.name, currentList.archived);
+                gsd.successMessage(success_msg);
+            }
+        });
+    }
+
     return {
 
         // Public vars ----------------------------------------------------
@@ -353,8 +384,18 @@ var gsd = (function()
          */
         doDone: function(index)
         {
-            var task = currentList.tasks[index].descript;
-            gsd.errorMessage("gsd.doDone() not done " + task);
+            // Toggle completion status
+            if (currentList.tasks[index].isCompleted)
+            {
+                currentList.tasks[index].isCompleted = false;
+            }
+            else
+            {
+                var d = new Date();
+                currentList.tasks[index].isCompleted = true;
+                currentList.tasks[index].dateCompleted = d.valueOf();
+            }
+            saveCurrentList("Task completion updated.", "doDone");
         },
 
         /**
@@ -378,7 +419,16 @@ var gsd = (function()
          */
         doDelete: function(index)
         {
-            gsd.errorMessage("gsd.doDelete() not done");
+            if ( ! confirm("This will permanently destroy the task. Are you sure?"))
+            {
+                return;
+            }
+
+            // Remove the item from currentList
+            currentList.tasks.splice(index, 1);
+
+            // And save the list
+            saveCurrentList("Task successfully removed.", "doDelete");
         }
 
     };
