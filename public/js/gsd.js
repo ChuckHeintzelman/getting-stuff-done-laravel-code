@@ -17,6 +17,8 @@ var gsd = (function()
 
     var alertTimer = null;
     var currentList = null;
+    var activeLists = null;
+    var archivedLists = null;
 
     /**
      * Display a message or error box
@@ -88,6 +90,77 @@ var gsd = (function()
         $("#button-add").prop("disabled", currentList.archived);
     }
 
+    /**
+     * Show one of the list of lists on the sidebar
+     */
+    function showSidebarList(archived)
+    {
+        var list = archived ? archivedLists : activeLists;
+        var ul = archived ? $("#archived-lists") : $("#active-lists");
+        var build = [];
+
+        // No items in list of lists?
+        if (list.length == 0)
+        {
+            ul.html('<li>No archived lists</li>');
+            return;
+        }
+
+        // Loop through each item, building html for the
+        for (var i = 0; i < list.length; i++)
+        {
+            var html = '<li';
+            var l = list[i];
+            var numTasks = l.numNextActions + l.numNormal;
+            if (archived == currentList.archived && l.name == currentList.name)
+                html += ' class="active"';
+            html += '><a href="javascript:gsd.loadList(\'' + l.name + '\',';
+            html += archived + ')">';
+            html += l.title;
+            if ( ! archived && numTasks > 0)
+            {
+                html += ' <span class="badge">' + numTasks + '</span>';
+            }
+            html += '</a></li>';
+            build.push(html);
+        }
+        ul.html(build.join("\n"));
+    }
+
+    /**
+     * Load the list of lists
+     * @param bool archived Load the archived lists?
+     */
+    function loadLists(archived)
+    {
+        var url = "/lists";
+        if (archived) url += "?archived=1";
+        $.ajax({
+            url: url,
+            error: function(hdr, status, error)
+            {
+                gsd.errorMessage("loadLists " + status + ' - ' + error);
+            },
+            success: function(data)
+            {
+                if (data && data.error)
+                {
+                    gsd.errorMessage("loadList error: " + data.error);
+                    return;
+                }
+                if (archived)
+                {
+                    archivedLists = data.lists;
+                }
+                else
+                {
+                    activeLists = data.lists;
+                }
+                showSidebarList(archived);
+            }
+        });
+    }
+
     return {
 
         // Public vars ----------------------------------------------------
@@ -153,6 +226,10 @@ var gsd = (function()
                     }
                     currentList = data.list;
                     updateNavBar();
+
+                    // Reload the lists
+                    loadLists(false);
+                    loadLists(true);
                 }
             });
         }
