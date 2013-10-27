@@ -14,7 +14,27 @@ class ListController extends \Controller {
      */
     public function index()
     {
-        return Response::json(array('error' => 'index not done'));
+        $archived = !! Input::get('archived');
+        $lists = Todo::allLists($archived);
+
+        $return = array(
+            'lists' => array(),
+        );
+
+        foreach ($lists as $listId)
+        {
+            $list = Todo::get($listId, $archived);
+            $return['lists'][] = array(
+                'name'           => $listId,
+                'title'          => $list->title(),
+                'subtitle'       => $list->get('subtitle'),
+                'isArchived'     => $list->isArchived(),
+                'numNextActions' => $list->taskCount('next'),
+                'numNormal'      => $list->taskCount('todo'),
+                'numCompleted'   => $list->taskCount('done'),
+            );
+        }
+        return Response::json($return);
     }
 
     /**

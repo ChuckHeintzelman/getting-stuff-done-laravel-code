@@ -5,9 +5,11 @@ This code is the companion for the book [Getting Stuff Done with Larvel](https:/
 
 Each branch in this repository contains source code as it is at the end of each chapter named in the branch.
 
-This is from Chapter 62 - Finishing the Top Nav Bar
+This is from Chapter 63 - The Side Navigation
 
 Changes in this chapter:
 
-* Added handlers for the navbar options
-* Loaded current list info into navbar
+* Updated layout to final structure
+* Created sidebar partial
+* Finished ListController's index method
+* Added javascript to load the lists in the sidebar
