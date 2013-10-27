@@ -16,6 +16,7 @@ var gsd = (function()
     // Private vars and functions -----------------------------------------
 
     var alertTimer = null;
+    var currentList = null;
 
     /**
      * Display a message or error box
@@ -39,6 +40,54 @@ var gsd = (function()
         }, 8000);
     }
 
+    /**
+     * Handle click on the top nav menu archive/unarchive option
+     */
+    function menuArchiveClick()
+    {
+        gsd.errorMessage("gsd.menuArchiveClick() not done");
+        return false;
+    }
+
+    /**
+     * Handle click on the top nav menu rename option
+     */
+    function menuRenameClick()
+    {
+        gsd.errorMessage("gsd.menuRenameClick() not done");
+        return false;
+    }
+
+    /**
+     * Handle click on the top nav menu create option
+     */
+    function menuCreateClick()
+    {
+        gsd.errorMessage("gsd.menuCreateClick() not done");
+        return false;
+    }
+
+    /**
+     * Handle click on the add task button
+     */
+    function buttonAddClick()
+    {
+        gsd.errorMessage("gsd.buttonAddClick() not done");
+        return false;
+    }
+
+    /**
+     * Update the navbar for the current list
+     */
+    function updateNavBar()
+    {
+        $("#list-name").html("+" + currentList.name);
+        $("#menu-archive-text").html(
+            currentList.archived ? "Unarchive" : "Archive"
+        );
+        $("#button-add").prop("disabled", currentList.archived);
+    }
+
     return {
 
         // Public vars ----------------------------------------------------
@@ -52,6 +101,13 @@ var gsd = (function()
          */
         initialize: function()
         {
+            // Assign various handlers
+            $("#menu-archive").click(menuArchiveClick);
+            $("#menu-rename").click(menuRenameClick);
+            $("#menu-create").click(menuCreateClick);
+            $("#button-add").click(buttonAddClick);
+
+            // Load the default list
             this.loadList(this.defaultList, false);
         },
 
@@ -95,8 +151,8 @@ var gsd = (function()
                         gsd.errorMessage("loadList error: " + data.error);
                         return;
                     }
-                    gsd.successMessage("Cool");
-                    console.log(data.list);
+                    currentList = data.list;
+                    updateNavBar();
                 }
             });
         }
