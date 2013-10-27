@@ -161,6 +161,119 @@ var gsd = (function()
         });
     }
 
+    /**
+     * Build table row html for complete task
+     * @param object task Task object
+     * @param int index Index of task within currentList.tasks
+     * @return string HTML for a table row representing the task
+     */
+    function buildCompletedTask(task, index)
+    {
+        var html = [];
+        html.push('<tr>');
+        html.push('<td><span class="label label-default">finished ');
+        var d = new Date(task.dateCompleted);
+        html.push(d.toDateString() + '</span></td><td>');
+        html.push($('<div/>').text(task.descript).html());
+        if (task.dateDue)
+        {
+            d = new Date(task.dateDue);
+            tml.push(' <span class="label label-info">');
+            html.push('due ' + d.toDateString());
+            html.push('</span>');
+        }
+        html.push('</td><td>');
+
+        if ( ! currentList.archived)
+        {
+            html.push('<a href="javascript:void(0)" onclick="gsd.doDone(' + index);
+            html.push(')" class="btn btn-default btn-xs" title="Mark not complete">');
+            html.push('<span class="glyphicon glyphicon-ok"></span></a>');
+            html.push(' <a href="javascript:void(0)" onclick="gsd.doDelete(' + index);
+            html.push(')" class="btn btn-danger btn-xs" title="Delete task">');
+            html.push('<span class="glyphicon glyphicon-remove-circle"></span></a>');
+        }
+
+        html.push('</td>');
+        html.push('</tr>');
+
+        return html.join('');
+    }
+
+    /**
+     * Build table row html for open task
+     * @param object task Task object
+     * @param int index Index of task within currentList.tasks
+     * @return string HTML for a table row representing the task
+     */
+    function buildOpenTask(task, index)
+    {
+        var html = [];
+        html.push('<tr>');
+        html.push('<td>');
+        if (task.isNext)
+            html.push('<span class="label label-success">next</span>');
+        html.push('</td>');
+        html.push('<td>');
+        html.push($('<div/>').text(task.descript).html());
+        if (task.dateDue)
+        {
+            var d = new Date(task.dateDue);
+            html.push(' <span class="label label-primary">');
+            html.push('due ' + d.toDateString());
+            html.push('</span>');
+        }
+        html.push('</td>');
+        html.push('<td>');
+        if ( ! currentList.archived)
+        {
+            html.push('<a href="javascript:void(0)" onclick="gsd.doDone(' + index);
+            html.push(')" class="btn btn-success btn-xs" title="Mark complete">');
+            html.push('<span class="glyphicon glyphicon-ok"></span></a>');
+            html.push(' <a href="javascript:void(0)" onclick="gsd.doEdit(' + index);
+            html.push(')" class="btn btn-info btn-xs" title="Edit task">');
+            html.push('<span class="glyphicon glyphicon-pencil"></span></a>');
+            html.push(' <a href="javascript:void(0)" onclick="gsd.doMove(' + index);
+            html.push(')" class="btn btn-warning btn-xs" title="Move task">');
+            html.push('<span class="glyphicon glyphicon-transfer"></span></a>');
+            html.push(' <a href="javascript:void(0)" onclick="gsd.doDelete(' + index);
+            html.push(')" class="btn btn-danger btn-xs" title="Delete task">');
+            html.push('<span class="glyphicon glyphicon-remove-circle"></span></a>');
+        }
+
+        html.push('</td>');
+        html.push('</tr>');
+
+        return html.join('');
+    }
+
+    /**
+     * Show the Open Tasks and Completed Tasks
+     */
+    function showTasks()
+    {
+        var open = [];
+        var completed = [];
+        for (var i = 0; i < currentList.tasks.length; i++)
+        {
+            var task = currentList.tasks[i];
+            if (task.isCompleted)
+            {
+                completed.push(buildCompletedTask(task, i));
+            }
+            else
+            {
+                open.push(buildOpenTask(task, i));
+            }
+        }
+        if (open.length === 0)
+            open.push('<tr><td colspan="3">No open tasks</td></tr>');
+        if (completed.length === 0)
+            completed.push('<tr><td colspan="3">No completed tasks</td></tr>');
+        $("#open-tasks").html(open.join("\n"));
+        $("#completed-tasks").html(completed.join("\n"));
+    }
+
     return {
 
         // Public vars ----------------------------------------------------
@@ -226,12 +339,47 @@ var gsd = (function()
                     }
                     currentList = data.list;
                     updateNavBar();
+                    showTasks();
 
                     // Reload the lists
                     loadLists(false);
                     loadLists(true);
                 }
             });
+        },
+
+        /**
+         * Mark a task as completed
+         */
+        doDone: function(index)
+        {
+            var task = currentList.tasks[index].descript;
+            gsd.errorMessage("gsd.doDone() not done " + task);
+        },
+
+        /**
+         * Edit a task
+         */
+        doEdit: function(index)
+        {
+            gsd.errorMessage("gsd.doEdit() not done");
+        },
+
+        /**
+         * Move a task
+         */
+        doMove: function(index)
+        {
+            gsd.errorMessage("gsd.doMove() not done");
+        },
+
+        /**
+         * Delete a task
+         */
+        doDelete: function(index)
+        {
+            gsd.errorMessage("gsd.doDelete() not done");
         }
+
     };
 })();
