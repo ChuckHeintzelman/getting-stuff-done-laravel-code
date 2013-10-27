@@ -2,7 +2,8 @@
 
 Route::get('/', function()
 {
-    return View::make('live');
+    return View::make('live')
+        ->withDefaultList(Config::get('todo.defaultList'));
 });
 Route::get('mock', function()
 {

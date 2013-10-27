@@ -43,6 +43,8 @@ var gsd = (function()
 
         // Public vars ----------------------------------------------------
 
+        defaultList: null,
+
         // Public functions -----------------------------------------------
 
         /**
@@ -50,7 +52,7 @@ var gsd = (function()
          */
         initialize: function()
         {
-            console.log("I'm initialized");
+            this.loadList(this.defaultList, false);
         },
 
         /**
@@ -69,6 +71,34 @@ var gsd = (function()
         errorMessage: function(message)
         {
             commonBox("error", message);
+        },
+
+        /**
+         * Load a list via AJAX and display it
+         * @param string name The list name
+         * @param boolean archive Is it an archived list?
+         */
+        loadList: function(name, archived)
+        {
+            var url = "/lists/" + name;
+            if (archived) url += "?archived=1";
+            $.ajax({
+                url: url,
+                error: function(hdr, status, error)
+                {
+                    gsd.errorMessage("loadList " + status + " - " + error);
+                },
+                success: function(data)
+                {
+                    if (data && data.error)
+                    {
+                        gsd.errorMessage("loadList error: " + data.error);
+                        return;
+                    }
+                    gsd.successMessage("Cool");
+                    console.log(data.list);
+                }
+            });
         }
     };
 })();

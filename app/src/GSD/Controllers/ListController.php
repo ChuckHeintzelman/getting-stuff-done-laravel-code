@@ -1,5 +1,7 @@
 <?php namespace GSD\Controllers;
 
+use GSD\Entities\ListInterface;
+use Input;
 use Response;
 use Todo;
 
@@ -30,7 +32,19 @@ class ListController extends \Controller {
      */
     public function show($id)
     {
-        return Response::json(array('error' => 'show not done'));
+        $archived = !! Input::get('archived');
+        try
+        {
+            $list = Todo::get($id, $archived);
+            $result = $this->toAssoc($list);
+        }
+        catch (\RuntimeException $e)
+        {
+            $result = array(
+                'error' => $e->getMessage()
+            );
+        }
+        return Response::json($result);
     }
 
     /**
@@ -84,4 +98,41 @@ class ListController extends \Controller {
         return Response::json(array('error' => 'renane not done'));
     }
 
+    /**
+     * Convert a TodoList to an associative array
+     * @param ListInterface $list The List
+     * @return array The associative array
+     */
+    protected function toAssoc(ListInterface $list)
+    {
+        $return = array(
+            'list' => array(
+                'name'     => $list->get('id'),
+                'title'    => $list->get('title'),
+                'subtitle' => $list->get('subtitle'),
+                'archived' => $list->get('archived'),
+                'tasks'    => array(),
+            ),
+        );
+        foreach ($list->tasks() as $task)
+        {
+            $array = array(
+                'isNext'        => $task->isNextAction(),
+                'isCompleted'   => $task->isComplete(),
+                'descript'      => $task->description(),
+                'dateDue'       => $task->dateDue(),
+                'dateCompleted' => $task->dateCompleted(),
+            );
+            if ($array['dateDue'])
+            {
+                $array['dateDue'] = $array['dateDue']->timestamp * 1000;
+            }
+            if ($array['dateCompleted'])
+            {
+                $array['dateCompleted'] = $array['dateCompleted']->timestamp * 1000;
+            }
+            $return['list']['tasks'][] = $array;
+        }
+        return $return;
+    }
 }
