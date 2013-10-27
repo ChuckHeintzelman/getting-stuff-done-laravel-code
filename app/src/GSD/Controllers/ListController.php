@@ -2,12 +2,24 @@
 
 use App;
 use Carbon\Carbon;
+use Config;
 use GSD\Entities\ListInterface;
+use GSD\Repositories\TodoRepositoryInterface;
 use Input;
 use Response;
 use Todo;
 
 class ListController extends \Controller {
+
+    protected $repository;
+
+    /**
+     * Constructor
+     */
+    public function __construct(TodoRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
      * Returns a list of lists
@@ -137,7 +149,34 @@ class ListController extends \Controller {
      */
     public function archive($id)
     {
-        return Response::json(array('error' => 'archive not done'));
+
+        try
+        {
+            // Throws error if list doesn't exist
+            $list = Todo::get($id);
+
+            // Can't archive default list
+            if ($id == Config::get('todo.defaultList'))
+            {
+                throw new \RuntimeException("Cannot archive default list");
+            }
+
+            // Throw error if archived list exists
+            if ($this->repository->exists($id, true))
+            {
+                throw new \RuntimeException(
+                    "Archive list '$id' exists. Try renaming first."
+                );
+            }
+        }
+        catch (\Exception $e)
+        {
+            return Response::json(array('error' => $e->getMessage()));
+        }
+
+        $list->archive();
+
+        return Response::json(array('success' => true));
     }
 
     /**
@@ -147,7 +186,37 @@ class ListController extends \Controller {
      */
     public function unarchive($id)
     {
-        return Response::json(array('error' => 'unarchive not done'));
+        try
+        {
+            // Throws error if list doesn't exist
+            $list = Todo::get($id, true);
+
+            // Throw error if active list exists
+            if ($this->repository->exists($id, false))
+            {
+                throw new \RuntimeException(
+                    "Active list '$id' exists. Try renaming first."
+                );
+            }
+
+            // Save as unarchived
+            $list->set('archived', false);
+            $list->save();
+
+            // Delete existing archived list
+            if ( ! $this->repository->delete($id, true))
+            {
+                throw new \RuntimeException(
+                    'ERROR deleting archived version.'
+                );
+            }
+        }
+        catch (\Exception $e)
+        {
+            return Response::json(array('error' => $e->getMessage()));
+        }
+
+        return Response::json(array('success' => true));
     }
 
     /**
