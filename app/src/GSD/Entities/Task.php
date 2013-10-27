@@ -78,15 +78,25 @@ class Task implements TaskInterface {
     }
 
     /**
-     * Set whether task is complete. Automatically updates dateCompleted.
+     * Set whether task is complete.
      * @param bool $complete
+     * @param mixed $when If null then uses current date/time, otherwise
+     *                    a Carbon object or date/time string
      */
-    public function setIsComplete($complete)
+    public function setIsComplete($complete, $when = null)
     {
         $this->complete = !! $complete;
         if ($this->complete)
         {
-            $this->whenCompleted = new Carbon;
+            if ($when == null)
+            {
+                $when = new Carbon;
+            }
+            else if (is_string($when))
+            {
+                $when = new Carbon($when);
+            }
+            $this->whenCompleted = $when;
         }
         else
         {

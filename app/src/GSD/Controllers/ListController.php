@@ -1,5 +1,7 @@
 <?php namespace GSD\Controllers;
 
+use App;
+use Carbon\Carbon;
 use GSD\Entities\ListInterface;
 use Input;
 use Response;
@@ -74,7 +76,48 @@ class ListController extends \Controller {
      */
     public function update($id)
     {
-        return Response::json(array('error' => 'update not done'));
+        if ($id != Input::get('name'))
+        {
+            return Response::json(array('error' => 'List id/name mismatch'));
+        }
+
+        // Build new list with values
+        $list = App::make('GSD\Entities\ListInterface');
+        $list->set('id', $id);
+        $list->set('title', Input::get('title'));
+        $list->set('subtitle', Input::get('subtitle'));
+        $list->set('archived', str2bool(Input::get('archived')));
+
+        // Add tasks to list from values passed
+        $tasks = Input::get('tasks');
+        if ( ! is_array($tasks)) $tasks = array();
+        foreach ($tasks as $task)
+        {
+            $newTask = App::make('GSD\Entities\TaskInterface');
+            $descript = $task['descript'];
+            if ($task['dateDue'])
+            {
+                $d = Carbon::createFromTimestamp($task['dateDue'] / 1000);
+                $descript .= ' :due:' . $d->format('Y-m-d');
+            }
+            $newTask->setDescription($descript);
+            if (str2bool($task['isCompleted']))
+            {
+                $newTask->setIsComplete(
+                    true,
+                    Carbon::createFromTimestamp($task['dateCompleted'] / 1000)
+                );
+            }
+            if (str2bool($task['isNext']))
+            {
+                $newTask->setIsNextAction(true);
+            }
+            $list->taskAdd($newTask);
+        }
+
+        // Save and return success
+        $list->save();
+        return Response::json(array('success' => true));
     }
 
     /**
